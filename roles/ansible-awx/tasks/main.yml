@@ -1,0 +1,8 @@
+- block:
+  - name: Install AWX
+    include_tasks: install_awx.yml
+    # tags: never, install
+
+  - name: Remove AWX
+    include_tasks: remove_awx.yml
+    tags: never, remove

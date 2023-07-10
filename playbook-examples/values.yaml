@@ -1,0 +1,77 @@
+AWX:
+  enabled: true
+  name: awx
+  spec:
+    # User
+    admin_user: admin
+
+    # PostgreSQL
+    postgres_image: postgres:13:latest
+    postgres_data_path: /var/lib/postgresql/data/pgdata
+    postgres_resource_requirements:
+      requests:
+        cpu: 500m
+        memory: 2Gi
+      limits:
+        cpu: '1'
+        memory: 4Gi
+    postgres_storage_requirements:
+      requests:
+        storage: 8Gi
+      limits:
+        storage: 50Gi
+    postgres_extra_args:
+      - '-c'
+      - 'max_connections=1000'
+
+    # AWX
+    image: cyrilix/awx
+    image_version: 22.0.0
+    init_container_image: philthynz/awx-ee
+    init_container_image_version: 1.0.0
+    control_plane_ee_image: philthynz/awx-ee:1.0.0
+    ee_images:
+    - name: AWX EE (philthynz)
+      image: philthynz/awx-ee:1.0.0
+
+    # Ingress
+    service_type: NodePort
+    ingress_type: ingress
+    ingress_class_name: nginx
+    ingress_path: '/'
+    ingress_path_type: 'Prefix'
+    hostname: awx.example.com
+    ingress_tls_secret: awx-cert
+    ingress_annotations: |
+      cert-manager.io/issuer: prod-issuer
+      cert-manager.io/issuer-kind: OriginIssuer
+      cert-manager.io/issuer-group: cert-manager.k8s.cloudflare.com
+
+    # Web
+    # web_resource_requirements:
+    #   requests:
+    #     cpu: 250m
+    #     memory: 2Gi
+    #     # ephemeral-storage: 100M
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 4Gi
+    #     # ephemeral-storage: 500M
+    # task_resource_requirements:
+    #   requests:
+    #     cpu: 250m
+    #     memory: 1Gi
+    #     # ephemeral-storage: 100M
+    #   limits:
+    #     cpu: 2000m
+    #     memory: 2Gi
+    #     # ephemeral-storage: 500M
+    # ee_resource_requirements:
+    #   requests:
+    #     cpu: 250m
+    #     memory: 100Mi
+    #     # ephemeral-storage: 100M
+    #   limits:
+    #     cpu: 500m
+    #     memory: 2Gi
+    #     # ephemeral-storage: 500M

@@ -1,0 +1,46 @@
+---
+# ansible tasks file for ansible-awx
+- block:
+  - name: Create a k8s namespace
+    kubernetes.core.k8s:
+      name: "{{ namespace_name }}"
+      api_version: v1
+      kind: Namespace
+      state: present
+      context: "{{ kubeconfig_context }}"
+    register: namespace
+
+  - name: Recursively remove AWX Operator Repo
+    ansible.builtin.file:
+      path: "{{ git_checkout_dest }}"
+      state: absent
+
+  - name: Clone AWX Operator Repo
+    ansible.builtin.command: "git clone https://github.com/ansible/awx-operator.git --branch {{ git_repo_tag }} --single-branch {{ git_checkout_dest }}"
+
+  - name: Get info on current AWX Operator
+    kubernetes.core.k8s_info:
+      kind: Deployment
+      api_version: apps/v1
+      name: awx-operator-controller-manager
+      namespace: "{{ namespace_name }}"
+      context: "{{ kubeconfig_context }}"
+    register: awx_operator_current
+
+  - name: Make Helm Chart
+    community.general.make:
+      chdir: "{{ git_checkout_dest }}"
+      target: helm-chart
+      file: "{{ git_checkout_dest }}/Makefile"
+    environment: "{{ kube_env }}"
+
+  - name: Deploy AWX Helm Chart
+    kubernetes.core.helm:
+      name: awx
+      release_namespace: "{{ namespace_name }}"
+      chart_ref: "{{ git_checkout_dest }}/charts/awx-operator/"
+      context: "{{ kubeconfig_context }}"
+      values_files:
+        - "{{ helm_values_file }}"
+      values:
+        AWX.spec.hostname: "{{ web_hostname }}"

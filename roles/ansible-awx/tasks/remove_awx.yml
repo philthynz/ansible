@@ -1,0 +1,31 @@
+---
+# ansible tasks file for ansible-awx
+- block:
+  - name: Remove AWX Helm Chart
+    kubernetes.core.helm:
+      name: awx
+      release_namespace: "{{ namespace_name }}"
+      state: absent
+
+  - name: Remove Operator
+    community.general.make:
+      chdir: "{{ git_checkout_dest }}"
+      target: undeploy
+      file: "{{ git_checkout_dest }}/Makefile"
+    environment: "{{ kube_env }}"
+    ignore_errors: true
+
+  - name: Remove k8s namespace
+    kubernetes.core.k8s:
+      name: "{{ namespace_name }}"
+      api_version: v1
+      kind: Namespace
+      state: absent
+      context: "{{ kubeconfig_context }}"
+    register: namespace
+
+  - name: Recursively remove AWX Operator Repo
+    ansible.builtin.file:
+      path: "{{ git_checkout_dest }}"
+      state: absent
+  tags: remove

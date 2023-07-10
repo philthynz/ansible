@@ -1,0 +1,14 @@
+# Example playbook that calls the AWX Install Role
+---
+- name: Install AWX
+  hosts: localhost
+  gather_facts: false
+  vars:
+    kubeconfig_context: docker-desktop
+    awx_operator_image_base: cyrilix/awx-operator
+    git_repo_tag: 2.3.0
+
+  tasks:    
+    - include_role:
+        name: ansible-awx
+      tags: remove
