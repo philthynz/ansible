@@ -6,6 +6,7 @@ ansible > 2.13
 pip kubernetes
 kubectl in your PATH
 helm v3 in your PATH
+helm diff plugin
 
 ## Using the role
 1. Install the role with `ansible-galaxy install -r requirements.yml`
