@@ -1,8 +1,8 @@
 # Overview
 
-## (Work in progress)
-
-Some automation and docs to build and install Ansible AWX for K3's ARM64.
+Some automation, code and docs to build and install Ansible AWX.
 
  - Images
  - Deploy
+ - [Roles](roles/)
+   - [ansible-awx](roles/ansible-awx/readme.md)
