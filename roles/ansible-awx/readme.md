@@ -22,7 +22,7 @@ ansible-playbook install_awx.yaml -e kubeconfig_context="default"
 
 ## Remove Operator Example
 ```
-ansible-playbook install_awx.yaml -e kubeconfig_context="default" -e kubeconfig_path="/home/philthynz/.kube/config" -t remove
+ansible-playbook install_awx.yaml -e kubeconfig_context="default" -t remove
 ```
 
 ## Role Tags
@@ -34,7 +34,6 @@ ansible-playbook install_awx.yaml -e kubeconfig_context="default" -e kubeconfig_
 | Variable Name | Description         | Default |
 |----------|--------------------------|---------|
 | namespace_name | Defines the Namespace | awx |
-| kubeconfig_path | For the Makefile, where is the kube config file? |  |
 | kubeconfig_context: | Defines the k8s context in one of your .kube/config files | docker-desktop |
 | git_checkout_dest: /tmp/awx-operator | Where to checkout the git repo | /tmp/awx-operator |
 | git_repo_tag | The tag from the AWX-Operator repo to use, which will also be used as the operator image tag | 2.3.0 |

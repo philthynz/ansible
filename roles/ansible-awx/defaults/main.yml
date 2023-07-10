@@ -10,4 +10,3 @@ web_hostname: awx.example.com
 kube_env:
   NAMESPACE: "{{ namespace_name }}"
   IMAGE_TAG_BASE: "{{ awx_operator_image_base }}"
-  KUBECONFIG: "{{ kubeconfig_path }}"

@@ -7,14 +7,6 @@
       release_namespace: "{{ namespace_name }}"
       state: absent
 
-  - name: Remove Operator
-    community.general.make:
-      chdir: "{{ git_checkout_dest }}"
-      target: undeploy
-      file: "{{ git_checkout_dest }}/Makefile"
-    environment: "{{ kube_env }}"
-    ignore_errors: true
-
   - name: Remove k8s namespace
     kubernetes.core.k8s:
       name: "{{ namespace_name }}"
