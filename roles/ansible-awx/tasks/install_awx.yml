@@ -18,15 +18,6 @@
   - name: Clone AWX Operator Repo
     ansible.builtin.command: "git clone https://github.com/ansible/awx-operator.git --branch {{ git_repo_tag }} --single-branch {{ git_checkout_dest }}"
 
-  - name: Get info on current AWX Operator
-    kubernetes.core.k8s_info:
-      kind: Deployment
-      api_version: apps/v1
-      name: awx-operator-controller-manager
-      namespace: "{{ namespace_name }}"
-      context: "{{ kubeconfig_context }}"
-    register: awx_operator_current
-
   - name: Make Helm Chart
     community.general.make:
       chdir: "{{ git_checkout_dest }}"
@@ -44,4 +35,3 @@
         - "{{ helm_values_file }}"
       values:
         AWX.spec.hostname: "{{ web_hostname }}"
-    when: awx_operator_current is not defined    
