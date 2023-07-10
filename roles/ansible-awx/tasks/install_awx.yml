@@ -44,3 +44,4 @@
         - "{{ helm_values_file }}"
       values:
         AWX.spec.hostname: "{{ web_hostname }}"
+    when: awx_operator_current is not defined    
