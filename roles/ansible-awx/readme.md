@@ -37,7 +37,7 @@ ansible-playbook install_awx.yaml -e kubeconfig_context="default" -e kubeconfig_
 | kubeconfig_context: | Defines the k8s context in one of your .kube/config files | docker-desktop |
 | git_checkout_dest: /tmp/awx-operator | Where to checkout the git repo | /tmp/awx-operator |
 | git_repo_tag | The tag from the AWX-Operator repo to use, which will also be used as the operator image tag | 2.3.0 |
-| awx_operator_image  | Which awx-operator image base to use | quay.io/ansible/awx-operator |
+| awx_operator_image_base | Which awx-operator image base to use | quay.io/ansible/awx-operator |
 | helm_values_file  | Where the Helm values yaml is located | "{{ playbook_dir }}/values.yaml" |
 | kube_env | A yaml map which defines the values for making the Helm chart with Makefile | [ NAMESPACE: "{{ namespace_name }}" IMAGE_TAG_BASE: "{{ awx_operator_image_base }}"] |
 

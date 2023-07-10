@@ -4,7 +4,7 @@ namespace_name: awx
 kubeconfig_context: docker-desktop
 git_checkout_dest: /tmp/awx-operator
 git_repo_tag: 2.3.0
-awx_operator_image: quay.io/ansible/awx-operator
+awx_operator_image_base: quay.io/ansible/awx-operator
 helm_values_file: "{{ playbook_dir }}/values.yaml"
 web_hostname: awx.example.com
 kube_env:
