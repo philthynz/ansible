@@ -25,7 +25,7 @@ AWX:
       - 'max_connections=1000'
 
     # AWX
-    image: cyrilix/awx
+    image: zakihmkc/awx
     image_version: 22.0.0
     init_container_image: philthynz/awx-ee
     init_container_image_version: 1.0.0
