@@ -1,12 +1,19 @@
 ## Overview
 This role installs the AWX Operator and optionally AWX onto k8s. The big differenec with this role is that the image versions can all be specified, becuase it builds the Helm chart. Which makes AWX a lot easier when it comes to multi architectures. This has been tested on docker-desktop AMD64 and k3's ARM64.
 
+It's important to use the same operator versions that match the AWX release. You will find mathcing version on the [awx-operator release page](https://github.com/ansible/awx-operator/releases)
+
 ## Requirements
-ansible > 2.13
-pip kubernetes
-kubectl in your PATH
-helm v3 in your PATH
-helm diff plugin
+Deploy machine packages:
+ - ansible > 2.13
+ - pip kubernetes
+ - kubectl in your PATH
+ - helm v3 in your PATH
+ - helm diff plugin
+
+ Kubernetes:
+ - A k8s cluster
+ - A cert issuer already configured in K8s. Like let's encrypt or Cloudflare
 
 ## Using the role
 1. Install the role with `ansible-galaxy install -r requirements.yml`
