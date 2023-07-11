@@ -16,6 +16,18 @@
       context: "{{ kubeconfig_context }}"
     register: namespace
 
+  - name: Remove CRD's
+    kubernetes.core.k8s:
+      name: "{{ item }}"
+      api_version: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      state: absent
+    register: namespace
+    loop:
+      - AWXBackup
+      - AWXRestore
+      - AWX
+
   - name: Recursively remove AWX Operator Repo
     ansible.builtin.file:
       path: "{{ git_checkout_dest }}"
