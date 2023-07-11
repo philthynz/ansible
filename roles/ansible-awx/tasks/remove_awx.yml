@@ -17,14 +17,16 @@
 
   - name: Remove CRD's
     kubernetes.core.k8s:
-      name: "{{ item }}"
-      api_version: apiextensions.k8s.io/v1
-      kind: CustomResourceDefinition
+      definition:
+        api_version: apiextensions.k8s.io/v1
+        kind: CustomResourceDefinition
+        metadata:
+          name: "{{ item }}"
       state: absent
     loop:
-      - AWXBackup
-      - AWXRestore
-      - AWX
+      - awxbackups.awx.ansible.com
+      - awxrestores.awx.ansible.com
+      - awxs.awx.ansible.com
 
   - name: Recursively remove AWX Operator Repo
     ansible.builtin.file:
