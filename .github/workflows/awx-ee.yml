@@ -29,9 +29,17 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build image
+      - name: Create image
         run: |
-          ansible-builder build -v3 --tag=philthynz/awx-ee:latest --tag=philthynz/awx-ee:${{ github.event.release.tag_name }} --file=awx-ee/execution-environment.yml --container-runtime docker
+          ansible-builder create -v3 --file=awx-ee/execution-environment.yml
+
+      - name: List files
+        run: |
+          tree ./
+
+      # - name: Build image
+      #   run: |
+      #     ansible-builder build -v3 --tag=philthynz/awx-ee:latest --tag=philthynz/awx-ee:${{ github.event.release.tag_name }} --file=awx-ee/execution-environment.yml --container-runtime docker
 
       - name: Build and push
         uses: docker/build-push-action@v4
