@@ -1,0 +1,74 @@
+- block:
+  - name: Create gkeep namespace
+    kubernetes.core.k8s:
+      name: "{{ namespace_name }}"
+      api_version: v1
+      kind: Namespace
+      state: present
+      context: "{{ kubeconfig_context }}"
+    register: namespace_name
+
+  - name: Create configmap with script
+    kubernetes.core.k8s:
+      namespace: "{{ namespace_name.result.metadata.name }}"
+      definition:
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: gkeep-script
+          namespace: "{{ namespace_name.result.metadata.name }}"
+        data:
+          gkeep-script.sh: |
+            #!/bin/bash
+            pip install urllib3==1.26.1 >/dev/null
+            pip install -U gkeep >/dev/null
+            mkdir -p ~/.config/gkeep/
+            echo '{"username": "{{ gmail_username }}", "password": "{{ gmail_app_password }}"}' > ~/.config/gkeep/auth.json
+            gkeep notes get --title Shopping | sed 's/"//g' | sed -n '/.*☐ /s///p'
+      apply: true
+      context: "{{ kubeconfig_context }}"
+
+  - name: Create gkeep pod
+    kubernetes.core.k8s:
+      state: present
+      context: "{{ kubeconfig_context }}"
+      force: true
+      definition:
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: "gkeep-to-bring"
+          namespace: "{{ namespace_name.result.metadata.name }}"
+          labels:
+            app: gkeep
+        spec:
+          containers:
+          - name: gkeep
+            image: python:3.11.0b4-bullseye
+            command: ['sh', '-c', 'echo "Hello, Kubernetes!" && sleep 3600']
+            volumeMounts:
+              - name: script
+                mountPath: "/script"
+          volumes:
+            - name: script
+              configMap:
+                name: gkeep-script
+                defaultMode: 0500
+      wait: true
+      label_selectors:
+        - app=gkeep
+      wait_timeout: 20
+
+  - name: Get shopping list items
+    kubernetes.core.k8s_exec:
+      context: "{{ kubeconfig_context }}"
+      namespace: "{{ namespace_name.result.metadata.name }}"
+      pod: "gkeep-to-bring"
+      command: /script/gkeep-script.sh
+    register: gkeep_shopping_list
+
+  - name: Set shopping list fact
+    ansible.builtin.set_fact: shopping_list_items="{{ gkeep_shopping_list.stdout_lines }}"
+
+  - debug:
+      var: shopping_list_items

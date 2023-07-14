@@ -1,0 +1,4 @@
+---
+# defaults file for gkeep-to-bring!
+namespace_name: gkeep
+kubeconfig_context: docker-desktop
