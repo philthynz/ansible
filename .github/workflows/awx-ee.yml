@@ -33,12 +33,7 @@ jobs:
         run: |
           ansible-builder create -v3 --file=awx-ee/execution-environment.yml
 
-      - name: List files
-        run: |
-          tree ./
-          cat context/Containerfile
-
-      # - name: Build image
+      # - name: Build image (Depends on runner arch)
       #   run: |
       #     ansible-builder build -v3 --tag=philthynz/awx-ee:latest --tag=philthynz/awx-ee:${{ github.event.release.tag_name }} --file=awx-ee/execution-environment.yml --container-runtime docker
 
@@ -51,7 +46,7 @@ jobs:
           push: true
           tags: philthynz/awx-ee:latest, philthynz/awx-ee:${{ github.event.release.tag_name }}
 
-      # - name: Publish images
+      # - name: Publish images (Depends on runner arch)
       #   run: |
       #     echo "Images that can be pushed"
       #     docker image ls | grep phil
