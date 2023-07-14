@@ -44,7 +44,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: .
+          file: context/Containerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: philthynz/awx-ee:latest, philthynz/awx-ee:${{ github.event.release.tag_name }}
