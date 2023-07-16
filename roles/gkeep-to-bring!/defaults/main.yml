@@ -1,7 +1,5 @@
 ---
 # defaults file for gkeep-to-bring!
-namespace_name: gkeep
-kubeconfig_context: docker-desktop
 container_name: gkeep-to-bring
-gkeep_list_name: Shopping
+gkeep_note_name: Shopping
 bring_list_name: Shopping

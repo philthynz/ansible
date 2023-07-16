@@ -1,3 +1,1 @@
-## NOT CURRENTLY WORKING
-
-The AWX ARM64 image is built with a [Github Workflow](../.github/workflows/awx.yml). No other code is used.
+The AWX images are built with a [Github Workflow](../.github/workflows/awx.yml). No other code is used.

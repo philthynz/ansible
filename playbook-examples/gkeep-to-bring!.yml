@@ -1,16 +1,20 @@
-# Example playbook that calls the AWX Install Role
+# Example playbook that calls the Gkeep to Bring! Role
 ---
 - name: gkeep to bring!
   hosts: localhost
   gather_facts: false
-  vars:
-    kubeconfig_context: docker-desktop
   vars_prompt:
     - name: gmail_username
       prompt: Enter your gmail username
       private: true
     - name: gmail_app_password
       prompt: Enter your gmail app password
+      private: true
+    - name: bring_email
+      prompt: Enter your Bring! login email
+      private: true
+    - name: bring_password
+      prompt: Enter your Bring! login password
       private: true
 
   tasks:    

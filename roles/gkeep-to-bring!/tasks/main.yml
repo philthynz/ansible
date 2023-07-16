@@ -27,22 +27,22 @@
     command: /tmp/gkeep_setup_script.sh  
 
 - block:
-  - name: Copy get gkeep list items script into the container
+  - name: Copy get gkeep note items script into the container
     community.docker.docker_container_copy_into:
       container: "{{ container_info.container.Config.Hostname }}"
-      container_path: /tmp/gkeep_get_list.sh
+      container_path: /tmp/gkeep_get_note.sh
       mode: 755
       content: |
-        gkeep notes get --title {{ gkeep_list_name }} | sed 's/"//g' | sed -n '/.*☐ /s///p'
+        gkeep notes get --title {{ gkeep_note_name }} | sed 's/"//g' | sed -n '/.*☐ /s///p'
 
-  - name: Get gkeep list items
+  - name: Get gkeep note items
     community.docker.docker_container_exec:
       container: "{{ container_info.container.Config.Hostname }}"
-      command: sh /tmp/gkeep_get_list.sh
-    register: gkeep_list_items
+      command: sh /tmp/gkeep_get_note.sh
+    register: gkeep_note_items
 
-  - name: Set list fact
-    ansible.builtin.set_fact: gkeep_list_items="{{ gkeep_list_items.stdout_lines }}"
+  - name: Set note items fact
+    ansible.builtin.set_fact: gkeep_note_items="{{ gkeep_note_items.stdout_lines }}"
 
 - block:
   - name: Copy python get Bring! list uuid script into container
@@ -65,7 +65,7 @@
   - name: Copy run get Bring! list uuid script into container
     community.docker.docker_container_copy_into:
       container: "{{ container_info.container.Config.Hostname }}"
-      container_path: /tmp/run_gkeep_get_list.sh
+      container_path: /tmp/run_bring_get_list.sh
       mode: 755
       content: |
         /tmp/bring_get_uuid.sh | sed 's/'\''/"/g' | jq '.lists[] | select(.name=="{{ bring_list_name }}")' | jq .listUuid
@@ -73,7 +73,7 @@
   - name: Run get Bring! list uuid script
     community.docker.docker_container_exec:
       container: "{{ container_info.container.Config.Hostname }}"
-      command: sh /tmp/run_gkeep_get_list.sh
+      command: sh /tmp/run_bring_get_list.sh
     register: bring_list_uuid
 
   - name: Set Bring! uuid fact
@@ -96,20 +96,25 @@
     community.docker.docker_container_exec:
       container: "{{ container_info.container.Config.Hostname }}"
       command: python /tmp/add_bring_items.py "{{ item }}"
-    loop: "{{ gkeep_list_items }}"
+    loop: "{{ gkeep_note_items }}"
 
-#   - name: Delete gkeep notes {{ gkeep_list_name }}
-#     community.docker.docker_container_exec:
-#       container: "{{ container_info.container.Config.Hostname }}"
-#       command: gkeep notes delete --title {{ gkeep_list_name }}
-#     ignore_errors: true  
+  - name: Get gkeep {{ gkeep_note_name }} ID
+    community.docker.docker_container_exec:
+      container: "{{ container_info.container.Config.Hostname }}"
+      command: gkeep notes get --title {{ gkeep_note_name }}
+    register: bring_list_id
 
-#   - name: Create gkeep notes {{ gkeep_list_name }}
-#     community.docker.docker_container_exec:
-#       container: "{{ container_info.container.Config.Hostname }}"
-#       command: gkeep notes add "{{ gkeep_list_name }}" ""
+  - name: Set gkeep {{ gkeep_note_name }} ID fact
+    set_fact:
+      gkeep_note_id: "{{ bring_list_id.stdout_lines[0] | replace('(note id ', '') | replace(')', '') }}"
 
-# - name: Kill GKeep container
-#   community.docker.docker_container:
-#     name: "{{ container_info.container.Config.Hostname }}"
-#     state: absent
+  - name: Delete items from gkeep {{ gkeep_note_name }} note
+    community.docker.docker_container_exec:
+      container: "{{ container_info.container.Config.Hostname }}"
+      command: gkeep items delete {{ gkeep_note_id }} "{{ item }}"
+    loop: "{{ gkeep_note_items }}"
+
+- name: Kill GKeep container
+  community.docker.docker_container:
+    name: "{{ container_info.container.Config.Hostname }}"
+    state: absent

@@ -1,2 +1,2 @@
-# ansible-awx role
+# ansible roles
 - src: https://github.com/philthynz/ansible-awx.git
