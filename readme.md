@@ -1,9 +1,9 @@
 # Overview
 
-Some automation, code and docs to build and install Ansible AWX.
+Some automation, roles, code and docs for Ansible.
 
  - Images
- - Deploy
- - [Roles](roles/)
+   - [AWX-EE](awx-ee/readme.md)
+ - Roles
    - [ansible-awx](roles/ansible-awx/readme.md)
    - [gkeep-to-bring!](roles/gkeep-to-bring!/readme.md)

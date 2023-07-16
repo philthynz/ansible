@@ -1,1 +1,0 @@
-The AWX images are built with a [Github Workflow](../.github/workflows/awx.yml). No other code is used.
