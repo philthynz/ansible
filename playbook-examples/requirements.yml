@@ -1,2 +1,5 @@
 # ansible roles
-- src: https://github.com/philthynz/ansible-awx.git
+- src: https://github.com/philthynz/ansible.git
+  scm: git
+  version: master
+  name: philthynz
