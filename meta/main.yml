@@ -1,0 +1,12 @@
+# THIS FILE IS AUTO GENERATED #
+---
+# This file enables roles to be imported directly without using a collection import
+galaxy_info:
+  author: philthynz
+  description: "Collection of roles and code for Ansible"
+  licence: ""
+  min_ansible_version: "2.13"
+  platforms: "linux"
+    
+allow_duplicates: false
+dependencies: []
