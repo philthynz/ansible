@@ -10,5 +10,5 @@
 
   tasks:    
     - include_role:
-        name: ansible-awx
+        name: philthynz/roles/ansible-awx
       tags: remove
