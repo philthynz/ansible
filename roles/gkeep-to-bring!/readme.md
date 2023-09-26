@@ -20,6 +20,10 @@ All you need is a host with Docker installed.
 ansible-playbook gkeep-to-bring!.yml
 ```
 
+## Notes
+
+25.09.2013: gkeep had auth issues, this was due to the newest gpsoauth 1.0.3 package. Rolling back to 1.0.2 fixed the auth issues
+
 ## Variables
 | Variable Name | Description         | Default |
 |----------|--------------------------|---------|
