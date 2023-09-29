@@ -15,9 +15,9 @@
       #!/bin/bash
       apt-get update
       apt-get install -y jq
+      pip install -U gkeep
       pip install urllib3==1.26.1
       pip install -U gpsoauth==1.0.2
-      pip install -U gkeep
       pip install python-bring-api
       mkdir -p ~/.config/gkeep/
       echo '{"username": "{{ gmail_username }}", "password": "{{ gmail_app_password }}"}' > ~/.config/gkeep/auth.json
