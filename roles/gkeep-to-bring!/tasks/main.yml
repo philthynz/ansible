@@ -56,77 +56,77 @@
     debug: 
       var: gkeep_note_items
 
-# - block:
-#   - name: Copy python get Bring! list uuid script into container
-#     community.docker.docker_container_copy_into:
-#       container: "{{ container_info.container.Config.Hostname }}"
-#       container_path: /tmp/bring_get_uuid.sh
-#       mode: 755
-#       content: |
-#         #!/bin/bash
-#         GETLISTS=$(cat <<EOF
-#         from python_bring_api.bring import Bring
-#         bring = Bring("{{ bring_email }}", "{{ bring_password }}")
-#         bring.login()
-#         lists = bring.loadLists()
-#         print(lists)
-#         EOF
-#         )
-#         python -c "$GETLISTS"
+- block:
+  - name: Copy python get Bring! list uuid script into container
+    community.docker.docker_container_copy_into:
+      container: "{{ container_info.container.Config.Hostname }}"
+      container_path: /tmp/bring_get_uuid.sh
+      mode: 755
+      content: |
+        #!/bin/bash
+        GETLISTS=$(cat <<EOF
+        from python_bring_api.bring import Bring
+        bring = Bring("{{ bring_email }}", "{{ bring_password }}")
+        bring.login()
+        lists = bring.loadLists()
+        print(lists)
+        EOF
+        )
+        python -c "$GETLISTS"
 
-#   - name: Copy run get Bring! list uuid script into container
-#     community.docker.docker_container_copy_into:
-#       container: "{{ container_info.container.Config.Hostname }}"
-#       container_path: /tmp/run_bring_get_list.sh
-#       mode: 755
-#       content: |
-#         /tmp/bring_get_uuid.sh | sed 's/'\''/"/g' | jq '.lists[] | select(.name=="{{ bring_list_name }}")' | jq .listUuid
+  - name: Copy run get Bring! list uuid script into container
+    community.docker.docker_container_copy_into:
+      container: "{{ container_info.container.Config.Hostname }}"
+      container_path: /tmp/run_bring_get_list.sh
+      mode: 755
+      content: |
+        /tmp/bring_get_uuid.sh | sed 's/'\''/"/g' | jq '.lists[] | select(.name=="{{ bring_list_name }}")' | jq .listUuid
 
-#   - name: Run get Bring! list uuid script
-#     community.docker.docker_container_exec:
-#       container: "{{ container_info.container.Config.Hostname }}"
-#       command: sh /tmp/run_bring_get_list.sh
-#     register: bring_list_uuid
+  - name: Run get Bring! list uuid script
+    community.docker.docker_container_exec:
+      container: "{{ container_info.container.Config.Hostname }}"
+      command: sh /tmp/run_bring_get_list.sh
+    register: bring_list_uuid
 
-#   - name: Set Bring! uuid fact
-#     ansible.builtin.set_fact: bring_list_uuid="{{ bring_list_uuid.stdout_lines[0] | replace('\"', '') }}"
+  - name: Set Bring! uuid fact
+    ansible.builtin.set_fact: bring_list_uuid="{{ bring_list_uuid.stdout_lines[0] | replace('\"', '') }}"
 
-#   - name: Copy python add Bring! items script into container
-#     community.docker.docker_container_copy_into:
-#       container: "{{ container_info.container.Config.Hostname }}"
-#       container_path: /tmp/add_bring_items.py
-#       mode: 755
-#       content: |
-#         from python_bring_api.bring import Bring
-#         import sys
-#         item = sys.argv[1]
-#         bring = Bring("{{ bring_email }}", "{{ bring_password }}")
-#         bring.login()
-#         bring.saveItem("{{ bring_list_uuid }}", item, 'gkeep imported')
+  - name: Copy python add Bring! items script into container
+    community.docker.docker_container_copy_into:
+      container: "{{ container_info.container.Config.Hostname }}"
+      container_path: /tmp/add_bring_items.py
+      mode: 755
+      content: |
+        from python_bring_api.bring import Bring
+        import sys
+        item = sys.argv[1]
+        bring = Bring("{{ bring_email }}", "{{ bring_password }}")
+        bring.login()
+        bring.saveItem("{{ bring_list_uuid }}", item, 'gkeep imported')
 
-#   - name: Run add Bring! items script
-#     community.docker.docker_container_exec:
-#       container: "{{ container_info.container.Config.Hostname }}"
-#       command: python /tmp/add_bring_items.py "{{ item }}"
-#     loop: "{{ gkeep_note_items }}"
+  - name: Run add Bring! items script
+    community.docker.docker_container_exec:
+      container: "{{ container_info.container.Config.Hostname }}"
+      command: python /tmp/add_bring_items.py "{{ item }}"
+    loop: "{{ gkeep_note_items }}"
 
-#   - name: Get gkeep {{ gkeep_note_name }} ID
-#     community.docker.docker_container_exec:
-#       container: "{{ container_info.container.Config.Hostname }}"
-#       command: gkeep notes get --title {{ gkeep_note_name }}
-#     register: bring_list_id
+  - name: Get gkeep {{ gkeep_note_name }} ID
+    community.docker.docker_container_exec:
+      container: "{{ container_info.container.Config.Hostname }}"
+      command: gkeep notes get --title {{ gkeep_note_name }}
+    register: bring_list_id
 
-#   - name: Set gkeep {{ gkeep_note_name }} ID fact
-#     set_fact:
-#       gkeep_note_id: "{{ bring_list_id.stdout_lines[0] | replace('(note id ', '') | replace(')', '') }}"
+  - name: Set gkeep {{ gkeep_note_name }} ID fact
+    set_fact:
+      gkeep_note_id: "{{ bring_list_id.stdout_lines[0] | replace('(note id ', '') | replace(')', '') }}"
 
-#   - name: Delete items from gkeep {{ gkeep_note_name }} note
-#     community.docker.docker_container_exec:
-#       container: "{{ container_info.container.Config.Hostname }}"
-#       command: gkeep items delete {{ gkeep_note_id }} "{{ item }}"
-#     loop: "{{ gkeep_note_items }}"
+  - name: Delete items from gkeep {{ gkeep_note_name }} note
+    community.docker.docker_container_exec:
+      container: "{{ container_info.container.Config.Hostname }}"
+      command: gkeep items delete {{ gkeep_note_id }} "{{ item }}"
+    loop: "{{ gkeep_note_items }}"
 
-# - name: Kill GKeep container
-#   community.docker.docker_container:
-#     name: "{{ container_info.container.Config.Hostname }}"
-#     state: absent
+- name: Kill GKeep container
+  community.docker.docker_container:
+    name: "{{ container_info.container.Config.Hostname }}"
+    state: absent
