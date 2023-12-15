@@ -52,6 +52,10 @@
   - name: Set note items fact
     ansible.builtin.set_fact: gkeep_note_items="{{ gkeep_note_items.stdout_lines }}"
 
+  - name: View shopping items
+    debug: 
+      var: gkeep_note_items
+
 - block:
   - name: Copy python get Bring! list uuid script into container
     community.docker.docker_container_copy_into:
