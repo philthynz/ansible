@@ -57,6 +57,20 @@
       var: gkeep_note_items
 
 - block:
+  - name: Copy Bring! setup script into the container
+    community.docker.docker_container_copy_into:
+      container: "{{ container_info.container.Config.Hostname }}"
+      container_path: /tmp/bring_setup_script.sh
+      mode: 755
+      content: |
+        #!/bin/bash
+        pip install python-bring-api
+  
+  - name: Run Bring! setup script
+    community.docker.docker_container_exec:
+      container: "{{ container_info.container.Config.Hostname }}"
+      command: /tmp/bring_setup_script.sh
+
   - name: Copy python get Bring! list uuid script into container
     community.docker.docker_container_copy_into:
       container: "{{ container_info.container.Config.Hostname }}"
