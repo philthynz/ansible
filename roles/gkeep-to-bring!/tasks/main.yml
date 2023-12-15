@@ -15,10 +15,17 @@
       #!/bin/bash
       apt-get update
       apt-get install -y jq
-      pip install -U gkeep
+      pip install click==8.1.7
+      pip install future==0.18.3
+      pip install gkeep==1.0.1
+      pip install gkeepapi==0.14.2
+      pip install gpsoauth==1.0.2
+      pip install idna==3.6
+      pip install pycryptodomex==3.19.0
+      pip install requests==2.31.0
+      pip install setuptools==58.1.0
       pip install urllib3==1.26.1
-      pip install -U gpsoauth==1.0.2
-      pip install python-bring-api
+      pip install wheel==0.37.1
       mkdir -p ~/.config/gkeep/
       echo '{"username": "{{ gmail_username }}", "password": "{{ gmail_app_password }}"}' > ~/.config/gkeep/auth.json
 
