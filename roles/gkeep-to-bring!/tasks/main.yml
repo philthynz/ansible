@@ -41,7 +41,7 @@
       container_path: /tmp/gkeep_get_note.sh
       mode: 755
       content: |
-        gkeep notes get --title {{ gkeep_note_name }} #| sed 's/"//g' | sed -n '/.*☐ /s///p'
+        gkeep notes get --title {{ gkeep_note_name }} | sed 's/"//g' | sed -n '/.*☐ /s///p'
 
   - name: Get gkeep note items
     community.docker.docker_container_exec:
